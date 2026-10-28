@@ -1,0 +1,22 @@
+<mujoco model="rp1 supermimic scene">
+  <include file="rp1_supermimic.xml"/>
+
+  <statistic center="0 0 0.6" extent="0.5"/>
+
+  <visual>
+    <quality shadowsize="4096"/>
+    <map znear="0.05"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.55 0.55 0.57" rgb2="0.55 0.55 0.57" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" rgb1="0.66 0.66 0.675" rgb2="0.615 0.615 0.63" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="1.0 1.0" reflectance="0.0"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 3" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"
+          condim="4" contype="1" conaffinity="15" friction="0.9 0.2 0.2" solref="0.01 1"/>
+  </worldbody>
+</mujoco>

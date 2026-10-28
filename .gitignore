@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Downloaded / generated (fetch with scripts/setup/*)
+_work/
+logs/
+*.pt
+*.mp4
+*.npz
+
+# Robot meshes come from the Roboparty description packages (CERN-OHL-W-2.0);
+# keep them out of git and fetch them instead.
+assets/robots/*/meshes/
+assets/robots/rpo/*.STL
+assets/robots/*/_source/
+
+# Retargeted motion CSVs are LAFAN1 derivatives -> regenerate
+patches/unisupermimic/src/unisupermimic/assets/motions/
+
+# Patch backups written by the setup scripts
+_usm_backup/
+_gmr_backup/
+
+.DS_Store
+Thumbs.db
