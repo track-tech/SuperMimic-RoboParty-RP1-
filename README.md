@@ -24,7 +24,7 @@
 - RP1 各 checkpoint：6000 → 0.551/13 段；**10000 → 0.647/8 段**；12000 → 0.630/11 段。
 
 曲线与失败清单见 [RESULTS.md](RESULTS.md)，完整交接记录（含踩过的坑）见
-[docs/RP1-迁移进度与交接.md](docs/RP1-迁移进度与交接.md)。
+[docs/RP1-migration-notes.zh.md](docs/RP1-migration-notes.zh.md)。
 
 ---
 
