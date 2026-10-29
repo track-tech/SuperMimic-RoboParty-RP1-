@@ -28,6 +28,43 @@ from general_motion_retargeting.params import ROBOT_XML_DICT  # noqa: E402
 from general_motion_retargeting.utils.lafan1 import load_bvh_file  # noqa: E402
 
 
+def make_align_model(xml_path):
+    """Robot model + a temporary ground plane, for exact per-frame ground distance.
+
+    Bounding-sphere or origin based height estimates are wrong for elongated
+    collision shapes (a foot capsule's origin is ~5 cm above its sole), so the
+    alignment needs the real distance to a plane.  The temp file is written next
+    to the robot XML so a relative ``meshdir`` still resolves.
+    """
+    src = os.path.abspath(str(xml_path))
+    text = open(src, encoding="utf-8").read()
+    text = text.replace(
+        "</worldbody>",
+        '  <geom name="_align_plane" type="plane" size="0 0 1" pos="0 0 0"/>\n</worldbody>',
+    )
+    tmp = os.path.join(os.path.dirname(src), "._align_model.xml")
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+    try:
+        model = mj.MjModel.from_xml_path(tmp)
+    finally:
+        os.unlink(tmp)
+    return model
+
+
+def lowest_point(model, data):
+    """Exact signed distance from the robot's lowest colliding geom to z=0."""
+    plane = mj.mj_name2id(model, mj.mjtObj.mjOBJ_GEOM, "_align_plane")
+    lo = np.inf
+    for g in range(model.ngeom):
+        if g == plane:
+            continue
+        if model.geom_contype[g] == 0 and model.geom_conaffinity[g] == 0:
+            continue
+        lo = min(lo, float(mj.mj_geomDistance(model, data, g, plane, 5.0, None)))
+    return lo if np.isfinite(lo) else float(data.xpos[1:, 2].min())
+
+
 def retarget_one(bvh_file, robot, out_dir, fmt="lafan1", verbose=False):
     name = os.path.splitext(os.path.basename(bvh_file))[0]
     out_csv = os.path.join(out_dir, name + ".csv")
@@ -49,12 +86,17 @@ def retarget_one(bvh_file, robot, out_dir, fmt="lafan1", verbose=False):
     model = mj.MjModel.from_xml_path(str(ROBOT_XML_DICT[robot]))
     data = mj.MjData(model)
 
-    # lowest body point across the whole clip -> plant the motion on z=0
+    # Plant the motion on z=0 using the real distance from the lowest collision
+    # geometry to a plane.  Body origins are not good enough: a foot capsule's
+    # origin sits ~5 cm above its sole, so origin-based alignment buries every
+    # stance frame into the floor (measured: RP1 median -3.2 cm, RPO -2.0 cm).
+    align_model = make_align_model(ROBOT_XML_DICT[robot])
+    align_data = mj.MjData(align_model)
     lo = np.inf
     for k in range(n):
-        data.qpos[:] = qpos[k]
-        mj.mj_kinematics(model, data)
-        lo = min(lo, float(np.min(data.xpos[1:, 2])))
+        align_data.qpos[:] = qpos[k]
+        mj.mj_kinematics(align_model, align_data)
+        lo = min(lo, lowest_point(align_model, align_data))
     qpos[:, 2] -= lo
     # start at the origin in xy
     qpos[:, :2] -= qpos[0, :2]
