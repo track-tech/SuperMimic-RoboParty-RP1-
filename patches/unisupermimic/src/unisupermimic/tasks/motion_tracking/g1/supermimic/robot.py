@@ -159,7 +159,9 @@ if ROBOT_PROFILE in ("rpo", "rp1", "mars"):
     default_joint_pos_list = _profile.default_joint_pos_list
     # robots at a very different scale ship their own reward bandwidth
     REWARD_OVERRIDES = getattr(_profile, "REWARD_OVERRIDES", {})
+    RESET_NOISE = getattr(_profile, "RESET_NOISE", {})
 else:
     REWARD_OVERRIDES = {}
+    RESET_NOISE = {}
     ROOT_BODY_NAME = "pelvis"
     TORSO_BODY_NAME = "torso_link"

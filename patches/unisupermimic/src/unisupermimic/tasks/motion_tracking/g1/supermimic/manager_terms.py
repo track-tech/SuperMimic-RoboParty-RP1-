@@ -28,7 +28,19 @@ from unisupermimic.rl.algos.supermimic.geometry import (
 from unisupermimic.rl.contracts.supermimic import State
 
 from .kinematics import G1Kinematics
+from . import robot as _robot_profile  # noqa: E402
 from .mdp import MAX_STEP_REWARD, MDP, NUM_J, XI_DIM
+
+# Reset noise magnitudes. Upstream hardcodes absolute values tuned for a 1.3 m
+# humanoid; a 0.25 m robot needs its own (see robot_mars.RESET_NOISE).
+_RESET_NOISE = {
+    "p": (0.05, 0.05, 0.01),
+    "v": (0.5, 0.5, 0.2),
+    "w": (0.52, 0.52, 0.78),
+    "q": 0.1,
+}
+_RESET_NOISE.update(getattr(_robot_profile, "RESET_NOISE", {}))
+
 from .motion import BIN_FRAMES, MotionLib
 from .robot import G1_JOINT_NAMES, ROOT_BODY_NAME, TORSO_BODY_NAME, action_scale
 
@@ -343,9 +355,10 @@ class SuperMimicCommand(CommandTerm):
                 value[ids].clone() for value in (p, rotation, v, w, q, qd)
             )
             count = ids.numel()
+            _rn = _RESET_NOISE
             selected_p += self._rng.uniform(
-                torch.tensor([-0.05, -0.05, -0.01], device=self._device),
-                torch.tensor([0.05, 0.05, 0.01], device=self._device),
+                torch.tensor([-_rn["p"][0], -_rn["p"][1], -_rn["p"][2]], device=self._device),
+                torch.tensor([_rn["p"][0], _rn["p"][1], _rn["p"][2]], device=self._device),
                 (count, 3),
             )
             rotation_noise = self._rng.uniform(
@@ -355,16 +368,16 @@ class SuperMimicCommand(CommandTerm):
             )
             selected_R = so3_exp(rotation_noise) @ selected_R
             selected_v += self._rng.uniform(
-                torch.tensor([-0.5, -0.5, -0.2], device=self._device),
-                torch.tensor([0.5, 0.5, 0.2], device=self._device),
+                torch.tensor([-_rn["v"][0], -_rn["v"][1], -_rn["v"][2]], device=self._device),
+                torch.tensor([_rn["v"][0], _rn["v"][1], _rn["v"][2]], device=self._device),
                 (count, 3),
             )
             selected_w += self._rng.uniform(
-                torch.tensor([-0.52, -0.52, -0.78], device=self._device),
-                torch.tensor([0.52, 0.52, 0.78], device=self._device),
+                torch.tensor([-_rn["w"][0], -_rn["w"][1], -_rn["w"][2]], device=self._device),
+                torch.tensor([_rn["w"][0], _rn["w"][1], _rn["w"][2]], device=self._device),
                 (count, 3),
             )
-            selected_q += self._rng.uniform(-0.1, 0.1, (count, NUM_J))
+            selected_q += self._rng.uniform(-_rn["q"], _rn["q"], (count, NUM_J))
             p[ids], rotation[ids], v[ids], w[ids], q[ids] = (
                 selected_p,
                 selected_R,

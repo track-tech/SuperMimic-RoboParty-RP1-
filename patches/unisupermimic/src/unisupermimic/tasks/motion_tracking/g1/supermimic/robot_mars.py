@@ -110,3 +110,13 @@ def default_joint_pos_list() -> list[float]:
                 value = position
         positions.append(value)
     return positions
+
+
+# Upstream reset noise is absolute and tuned for a 1.3 m humanoid: +-0.5 m/s is
+# twice this robot's walking speed, so every episode ended in 15 steps.
+RESET_NOISE = {
+    "p": (0.01, 0.01, 0.004),
+    "v": (0.12, 0.12, 0.05),
+    "w": (0.3, 0.3, 0.4),
+    "q": 0.05,
+}

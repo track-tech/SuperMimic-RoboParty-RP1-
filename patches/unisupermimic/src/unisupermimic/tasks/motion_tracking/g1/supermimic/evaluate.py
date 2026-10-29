@@ -271,7 +271,7 @@ def make_eval_env(run_dir: Path, backend: str = "mjwarp") -> SuperMimicManagerBa
     task_dir = run_dir.resolve().parent.name.upper()
     profile = (
         "rp1_super_mimic" if task_dir.startswith("RP1")
-        else "mars_super_mimic" if task_dir.startswith("Mars")
+        else "mars_super_mimic" if task_dir.startswith("MARS")
         else "g1_super_mimic"
     )
     overrides = ["training.play_only=true", f"task={profile}/{backend}"]

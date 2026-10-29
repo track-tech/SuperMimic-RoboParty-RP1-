@@ -155,6 +155,11 @@ env:
   policy_observation_group: policy
   critic_observation_group: future
 
+algo:
+  # start the policy at zero residual (exactly track the reference); an untrained
+  # O(1) residual topples this 0.25 m point-foot robot in 0.3 s
+  policy_init_scale: 0.01
+
 reward:
   tracking:
     _target_: unilab.managers.RewardTermCfg
