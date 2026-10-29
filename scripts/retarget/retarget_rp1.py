@@ -42,13 +42,16 @@ def make_align_model(xml_path):
         "</worldbody>",
         '  <geom name="_align_plane" type="plane" size="0 0 1" pos="0 0 0"/>\n</worldbody>',
     )
-    tmp = os.path.join(os.path.dirname(src), "._align_model.xml")
+    tmp = os.path.join(os.path.dirname(src), f"._align_model_{os.getpid()}.xml")
     with open(tmp, "w", encoding="utf-8") as f:
         f.write(text)
     try:
         model = mj.MjModel.from_xml_path(tmp)
     finally:
-        os.unlink(tmp)
+        try:
+            os.unlink(tmp)
+        except OSError:
+            pass
     return model
 
 
