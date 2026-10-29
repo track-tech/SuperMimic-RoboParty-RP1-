@@ -1,0 +1,8 @@
+# @package _global_
+defaults:
+  - /task/mars_super_mimic/base
+  - _self_
+
+training:
+  task_name: MarsSuperMimic
+  sim_backend: mujoco

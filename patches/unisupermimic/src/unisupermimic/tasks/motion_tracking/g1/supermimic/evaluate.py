@@ -269,7 +269,11 @@ def make_eval_env(run_dir: Path, backend: str = "mjwarp") -> SuperMimicManagerBa
     # The task profile must match the run being evaluated: the run lives under
     # <log_root>/<task_name>/<timestamp>_<backend>.
     task_dir = run_dir.resolve().parent.name.upper()
-    profile = "rp1_super_mimic" if task_dir.startswith("RP1") else "g1_super_mimic"
+    profile = (
+        "rp1_super_mimic" if task_dir.startswith("RP1")
+        else "mars_super_mimic" if task_dir.startswith("Mars")
+        else "g1_super_mimic"
+    )
     overrides = ["training.play_only=true", f"task={profile}/{backend}"]
     with initialize_config_dir(version_base="1.3", config_dir=str(config_dir)):
         cfg = compose(config_name="config", overrides=overrides)

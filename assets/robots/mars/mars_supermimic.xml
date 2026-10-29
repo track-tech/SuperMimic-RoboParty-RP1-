@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<mujoco model="mars_v3">
+  <compiler angle="radian" meshdir="meshes/"/>
+  <size njmax="500" nconmax="100"/>
+  <option timestep="0.005" gravity="0 0 -9.81" solver="CG"/>
+  <default>
+    <joint damping="0" armature="0" frictionloss="0"/>
+  </default>
+  <asset>
+    <mesh name="part_001_baselink" file="part_001_baselink.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_002_part" file="part_002_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_003_part" file="part_003_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_004_part" file="part_004_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_005_part" file="part_005_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_006_part" file="part_006_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_007_2" file="part_007_2.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_008_part" file="part_008_part.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="part_009_part" file="part_009_part.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+  <worldbody>
+  <body name="base_link" pos="0 0 0.25">
+    <freejoint/>
+    <site name="imu" pos="0 0 0"/>
+    <geom name="base_collision" type="box" size="0.08 0.095 0.08" friction="1 0.005 0.0001" condim="3" group="0"/>
+    <inertial pos="0.017575178 0 0.060996502" mass="1.213313" diaginertia="0.00610398 0.00596316 0.00484367"/>
+    <geom name="base_link_vis0" type="mesh" mesh="part_001_baselink" pos="0 0 0" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+    <body name="abad_L_Link" pos="0.030725177 -0.05 -0.0050035013">
+      <joint name="abad_L_joint" type="hinge" axis="-1 0 0" range="-1.57 1.57"/>
+      <inertial pos="0.030249999 -0.0037000008 -5.4e-10" mass="0.17732402" diaginertia="9.66972e-05 0.000125682 0.000126358"/>
+      <geom name="abad_L_Link_vis0" type="mesh" mesh="part_003_part" pos="-0.030725177 0.05 0.0050035013" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+      <body name="hip_L_Link" pos="0.038 -0.0449 0">
+        <joint name="hip_L_joint" type="hinge" axis="0 1 0" range="-1.57 1.57"/>
+        <inertial pos="5.135235e-06 -0.015950002 -0.061311002" mass="0.26472128" diaginertia="0.000810155 0.000835443 0.000168132"/>
+        <geom name="hip_L_Link_vis0" type="mesh" mesh="part_004_part" pos="-0.068725177 0.0949 0.0050035013" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+        <body name="knee_L_Link" pos="0 -0.04565 -0.12">
+          <joint name="knee_L_joint" type="hinge" axis="0 -1 0" range="-3.14 3.14"/>
+          <inertial pos="-0.011410829 0.012499997 -0.052529931" mass="0.026284447" diaginertia="6.57247e-05 8.14027e-05 1.89909e-05"/>
+          <geom name="knee_L_Link_vis0" type="mesh" mesh="part_006_part" pos="-0.068725177 0.14055 0.1250035" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+          <body name="foot_L_Link" pos="-0.041320393 0.01275 -0.13004299">
+            <inertial pos="0.00020110577 1.602e-08 0.0028770834" mass="0.02" diaginertia="3.41099e-06 4.00375e-06 2.53892e-06"/>
+            <geom name="foot_L_Link_collision_mesh" type="mesh" mesh="part_009_part" pos="-0.027404784 0.1278 0.25504649" euler="1.5708 0 0" friction="1 0.005 0.0001" condim="3"/>
+            <geom name="foot_L_Link_vis0" type="mesh" mesh="part_009_part" pos="-0.027404784 0.1278 0.25504649" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="abad_R_Link" pos="0.030725177 0.05 -0.0050035013">
+      <joint name="abad_R_joint" type="hinge" axis="-1 0 0" range="-1.57 1.57"/>
+      <inertial pos="0.030249999 0.0037000008 -5.4e-10" mass="0.17732402" diaginertia="9.66972e-05 0.000125682 0.000126358"/>
+      <geom name="abad_R_Link_vis0" type="mesh" mesh="part_002_part" pos="-0.030725177 -0.05 0.0050035013" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+      <body name="hip_R_Link" pos="0.038 0.0449 0">
+        <joint name="hip_R_joint" type="hinge" axis="0 -1 0" range="-1.57 1.57"/>
+        <inertial pos="-5.133925e-06 0.015950002 -0.061311002" mass="0.26472128" diaginertia="0.000810155 0.000835443 0.000168132"/>
+        <geom name="hip_R_Link_vis0" type="mesh" mesh="part_005_part" pos="-0.068725177 -0.0949 0.0050035013" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+        <body name="knee_R_Link" pos="0 0.04565 -0.12">
+          <joint name="knee_R_joint" type="hinge" axis="0 -1 0" range="-3.14 3.14"/>
+          <inertial pos="-0.011410829 -0.012499997 -0.052529931" mass="0.026284447" diaginertia="6.57247e-05 8.14027e-05 1.89909e-05"/>
+          <geom name="knee_R_Link_vis0" type="mesh" mesh="part_007_2" pos="-0.068725177 -0.14055 0.1250035" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+          <body name="foot_R_Link" pos="-0.041320393 -0.01275 -0.13004299">
+            <inertial pos="0.00020110577 1.4495e-08 0.0028770834" mass="0.02" diaginertia="3.41099e-06 4.00375e-06 2.53892e-06"/>
+            <geom name="foot_R_Link_collision_mesh" type="mesh" mesh="part_008_part" pos="-0.027404784 -0.1278 0.25504649" euler="1.5708 0 0" friction="1 0.005 0.0001" condim="3"/>
+            <geom name="foot_R_Link_vis0" type="mesh" mesh="part_008_part" pos="-0.027404784 -0.1278 0.25504649" euler="1.5708 0 0" group="1" contype="0" conaffinity="0"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </body>
+  </worldbody>
+  <actuator>
+    <position name="abad_L_joint_motor" joint="abad_L_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+    <position name="hip_L_joint_motor" joint="hip_L_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+    <position name="knee_L_joint_motor" joint="knee_L_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+    <position name="abad_R_joint_motor" joint="abad_R_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+    <position name="hip_R_joint_motor" joint="hip_R_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+    <position name="knee_R_joint_motor" joint="knee_R_joint" kp="40.0" kv="2.5" forcelimited="true" forcerange="-12.0 12.0"/>
+  </actuator>
+  <keyframe>
+    <key name="stand" qpos="0 0 0.25 1 0 0 0 0 -0.3 -0.5 0 0.3 -0.5"/>
+  </keyframe>
+</mujoco>

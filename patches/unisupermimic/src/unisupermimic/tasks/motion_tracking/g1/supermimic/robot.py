@@ -142,9 +142,10 @@ import os as _os  # noqa: E402
 
 ROBOT_PROFILE = _os.environ.get("SUPERMIMIC_ROBOT", "g1").lower()
 
-if ROBOT_PROFILE in ("rpo", "rp1"):
+if ROBOT_PROFILE in ("rpo", "rp1", "mars"):
     _profile = _importlib.import_module(
-        ".robot_rpo" if ROBOT_PROFILE == "rpo" else ".robot_rp1", __package__
+        {"rpo": ".robot_rpo", "rp1": ".robot_rp1", "mars": ".robot_mars"}[ROBOT_PROFILE],
+        __package__,
     )
     G1_JOINT_NAMES = _profile.G1_JOINT_NAMES
     TRACKED_BODIES = _profile.TRACKED_BODIES
@@ -156,6 +157,9 @@ if ROBOT_PROFILE in ("rpo", "rp1"):
     motor_of = _profile.motor_of
     action_scale = _profile.action_scale
     default_joint_pos_list = _profile.default_joint_pos_list
+    # robots at a very different scale ship their own reward bandwidth
+    REWARD_OVERRIDES = getattr(_profile, "REWARD_OVERRIDES", {})
 else:
+    REWARD_OVERRIDES = {}
     ROOT_BODY_NAME = "pelvis"
     TORSO_BODY_NAME = "torso_link"

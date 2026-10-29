@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import dataclasses
+
 import copy
 from dataclasses import dataclass
 from typing import Literal, overload
@@ -20,6 +22,8 @@ from .kinematics import G1Kinematics
 from .motion import CONTROL_DT, MotionLib
 from .robot import G1_JOINT_NAMES as JOINT_NAMES
 from .robot import TRACKED_BODIES
+
+from . import robot as _robot  # noqa: E402
 
 NUM_J = len(JOINT_NAMES)
 NUM_TRACKED = len(TRACKED_BODIES)
@@ -314,3 +318,17 @@ class MDP:
             "clip_end": self.motion.clip_end[clips],
             "frame_bin": self.motion.frame_bin[frames],
         }
+
+# --- profile reward overrides ------------------------------------------------
+# Small robots need a tighter reward bandwidth: with body_pos_std = 0.3 m the
+# position Gaussian saturates for a 0.28 m tall robot and stops discriminating.
+# A dataclass bakes its defaults into the generated __init__, so both the field
+# metadata and __defaults__ have to be updated - setting the class attribute alone
+# changes nothing for RewardCfg().
+_OVERRIDES = getattr(_robot, "REWARD_OVERRIDES", {})
+if _OVERRIDES:
+    for _k, _v in _OVERRIDES.items():
+        RewardCfg.__dataclass_fields__[_k].default = _v
+    RewardCfg.__init__.__defaults__ = tuple(
+        f.default for f in dataclasses.fields(RewardCfg)
+    )
