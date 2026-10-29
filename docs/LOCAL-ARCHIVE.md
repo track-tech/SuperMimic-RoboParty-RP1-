@@ -29,11 +29,15 @@
 ```
 _ess/
 ├── ckpt/
-│   ├── rp1_20k_ckpt020000.pt     ← **最终最好：norm_return 0.750 / 2-40 失败**
+│   ├── rp1_30k_ckpt026000.pt     ← **最终最好：norm_return 0.758 / 3-40**
+│   ├── rp1_30k_ckpt030000.pt     ← 0.731 / 5-40
+│   ├── rp1_20k_ckpt020000.pt     ← 0.750 / **2-40**（失败最少，只剩两段舞蹈）
 │   ├── rp1_4096_ckpt012000.pt    ← 0.714 / 3-40
-│   ├── rp1_20k_ckpt008000.pt     ← 20000 轮那轮的中间点
+│   ├── rp1_20k_ckpt008000.pt
 │   ├── g1_ckpt006000.pt          ← G1 基线 0.774 / 5-40
-│   └── rp1_20k_last.pt           ← 207 MB，含优化器状态，**可以 resume 续训**
+│   └── …
+├── rp1_30k_last.pt ← 207 MB，30000 轮的完整状态，**可以 resume 续训**
+├── rp1_20k_last.pt ← 207 MB，20000 轮的完整状态
 ├── runs/          27 个 run 的 train_log.csv / args.json / run_config.json（训练曲线全在）
 ├── ik_configs/    bvh_lafan1_to_{rp1,rpo,mars_v3}.json（含调好的 scale 0.82 / foot dz −0.07）
 ├── configs/       mars_super_mimic 三个 yaml + Mars 的 MJCF 与场景
